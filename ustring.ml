@@ -8,8 +8,7 @@ let to_buffer ustring =
   Array.iter (Uutf.Buffer.add_utf_8 buffer) ustring;
   buffer
 
-let print ustring =
-  print_string (Buffer.contents (to_buffer ustring))
+let print ustring = print_string (Buffer.contents (to_buffer ustring))
 
 let of_string string =
   let src = `String string in
@@ -18,12 +17,13 @@ let of_string string =
   let rec aux () =
     match Uutf.decode decoder with
     | `Await -> assert false
-    | `Uchar u -> CCVector.push buffer u ; aux ()
+    | `Uchar u ->
+        CCVector.push buffer u;
+        aux ()
     | `End -> ()
     | `Malformed string -> assert false
   in
-  aux () ;
+  aux ();
   CCVector.to_array buffer
 
-let to_string ustring =
-  Buffer.contents (to_buffer ustring)
+let to_string ustring = Buffer.contents (to_buffer ustring)
