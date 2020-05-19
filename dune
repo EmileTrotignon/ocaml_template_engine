@@ -1,7 +1,10 @@
-(executable
-(name test)
+(library 
+(name template_engine)
+(public_name template_engine)
+(synopsis "Small template engine for OCaml")
 (libraries sedlex core uutf menhirLib ppxlib containers)
  (preprocess
-  (pps sedlex.ppx))
+  (pps sedlex.ppx ppx_inline_test))
   (flags :standard -w +39))
+
 (menhir  (flags --table --canonical) (modules parser))

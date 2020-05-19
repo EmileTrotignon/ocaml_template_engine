@@ -1,22 +1,13 @@
-open Template
 open Parser.MenhirInterpreter
 module S = MenhirLib.General
 
 let pp_pos out { Ppxlib.pos_lnum; pos_cnum; pos_bol; _ } =
   Format.fprintf out "line %d:%d" pos_lnum (pos_cnum - pos_bol)
 
-let handle_syntax_error lexbuf checkpoint =
+let handle_syntax_error lexbuf _ =
   let message = "Syntax error" in
   Format.fprintf Format.err_formatter "%s %a\n%!" message pp_pos
     (fst @@ Sedlexing.lexing_positions lexbuf)
-
-let state checkpoint : int =
-  match Lazy.force (stack checkpoint) with
-  | S.Nil ->
-      (* Hmm... The parser is in its initial state. Its number is
-         usually 0. This is a BIG HACK. TEMPORARY *)
-      0
-  | S.Cons (Element (s, _, _, _), _) -> number s
 
 let rec loop next_token lexbuf (checkpoint : Template.t checkpoint) =
   match checkpoint with
@@ -27,7 +18,7 @@ let rec loop next_token lexbuf (checkpoint : Template.t checkpoint) =
   | Shifting _ | AboutToReduce _ ->
       let checkpoint = resume checkpoint in
       loop next_token lexbuf checkpoint
-  | HandlingError env ->
+  | HandlingError _ ->
       handle_syntax_error lexbuf checkpoint;
       None
   | Accepted template -> Some template

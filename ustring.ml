@@ -21,7 +21,7 @@ let of_string string =
         CCVector.push buffer u;
         aux ()
     | `End -> ()
-    | `Malformed string -> assert false
+    | `Malformed string -> failwith (sprintf "Malformed input : %s" string)
   in
   aux ();
   CCVector.to_array buffer
