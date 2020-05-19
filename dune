@@ -1,0 +1,7 @@
+(executable
+(name test)
+(libraries sedlex core uutf menhirLib ppxlib containers)
+ (preprocess
+  (pps sedlex.ppx))
+  (flags :standard -w +39))
+(menhir  (flags --table --canonical) (modules parser))
