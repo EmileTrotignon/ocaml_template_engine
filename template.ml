@@ -28,5 +28,4 @@ let rec print_elt elt =
       print t;
       print_string "<%>"
 
-
 and print template = List.iter template ~f:print_elt

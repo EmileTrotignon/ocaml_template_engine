@@ -48,4 +48,3 @@ let token buffer =
   | _ -> assert false
 
 let lexer buffer = Sedlexing.with_tokenizer token buffer
-

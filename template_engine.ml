@@ -1,19 +1,10 @@
-module Template = struct
-
-  type elt = Template.elt
-
-  type t = Template.t
-
-  let of_string = Template_builder.of_string
-
-  let of_ustring = Template_builder.of_ustring
-end
-
-val render = Model.render
-
 module Ustring = Ustring
 
-module Model = struct
-  type elt = Model.elt
+module Template = struct
+  include Template
+  include Template_builder
+end
 
-  type t = Model.t
+module Model = Model
+
+let render : Template.t -> Model.t -> Ustring.t = Render.render
