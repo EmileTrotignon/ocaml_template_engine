@@ -10,9 +10,10 @@ authors: "Emile Trotignon emile.trotignon@gmail.com"
 license: "MIT"
 homepage: "https://emiletrotignon.github.io/ocaml_template_engine/"
 bug-reports: "https://github.com/EmileTrotignon/ocaml_template_engine/issues"
+dev-repo: "git+https://github.com/EmileTrotignon/ocaml_template_engine.git"
 depends: [ "ocaml" "ocamlfind" "dune" "sedlex" "core" "uutf" "menhir" "ppxlib" "containers"]
 build: [
-  ["./configure" "--prefix=%{prefix}%"]
-  [make]
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 install: [make "install"]

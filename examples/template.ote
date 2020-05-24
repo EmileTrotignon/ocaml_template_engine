@@ -1,0 +1,12 @@
+#<% title %>
+
+
+<%# section %>
+## <% title %>
+
+<% content %>
+
+<%$ url %><% link %><%>
+
+<%>
+

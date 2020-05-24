@@ -4,25 +4,36 @@ open Core
 let map_concat ~f string_list =
   List.fold_left ~f:Array.append ~init:[||] (List.map ~f string_list)
 
-let rec render template model =
-  Template.(
-    let render_item item =
-      match item with
-      | String s -> s
-      | Key key -> (
-          match find model key with
-          | Some (_, Value s) -> s
-          | _ -> failwith "A key need a value associated to it" )
-      | Section (key, template') -> (
-          match find model key with
-          | Some (_, List values) -> map_concat ~f:(render template') values
-          | _ -> failwith "Section needs a list" )
-      | Call (key, template') -> (
-          match find model key with
-          | Some (_, Lambda f) -> f (render template' model)
-          | _ -> failwith "Call needs a lambda" )
-    in
-    map_concat ~f:render_item template)
+let rec find_in_models models key =
+  match models with
+  | model :: models' -> 
+    (match find model key with
+    | Some elt -> Some elt
+    | None -> find_in_models models' key)
+  | [] -> None
+
+let render template model =
+  let rec render_from_model_list template models =
+    Template.(
+      let render_item item =
+        match item with
+        | String s -> s
+        | Key key -> (
+            match find_in_models models key with
+            | Some (_, Value s) -> s
+            | _ -> failwith (sprintf "Key '%s' need a value associated to it" key))
+        | Section (key, template') -> (
+            match find_in_models models key with
+            | Some (_, List values) -> map_concat ~f:(render_from_model_list template') (List.map ~f:(fun v -> v :: models) values)
+            | _ -> failwith (sprintf "Section '%s' need a list" key) )
+        | Call (key, template') -> (
+            match find_in_models models key with
+            | Some (_, Lambda f) -> f (render_from_model_list template' models)
+            | _ -> failwith (sprintf "Lambda call '%s' need a lambda" key) )
+      in
+      map_concat ~f:render_item template)
+  in
+  render_from_model_list template [model]
 
 let test_template template model expected_result =
   let t = render template model in
