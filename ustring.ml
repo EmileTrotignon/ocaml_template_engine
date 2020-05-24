@@ -27,3 +27,12 @@ let of_string string =
   CCVector.to_array buffer
 
 let to_string ustring = Buffer.contents (to_buffer ustring)
+
+let%test "conversion" =
+  List.for_all
+    (fun s -> String.equal s (to_string (of_string s)))
+    [
+      "hey  ";
+      "coucou";
+      "éééeeééæàßçäçü€„“„”»«òíìä”“„";
+    ]

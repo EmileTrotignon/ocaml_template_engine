@@ -1,4 +1,3 @@
-open Core
 open Parser
 
 let get_text buffer first =
@@ -21,30 +20,13 @@ let get_text buffer first =
 
 let token buffer =
   match%sedlex buffer with
-  | "<%#" ->
-      print_endline "LeftParSection";
-      LeftParSection
-  | "<%$" ->
-      print_endline "LeftParLambda";
-      LeftParLambda
-  | "<%>" ->
-      print_endline "CloseTag";
-      CloseTag
-  | "<%" ->
-      print_endline "LeftPar";
-      LeftPar
-  | "%>" ->
-      print_endline "RightPar";
-      RightPar
-  | eof ->
-      print_endline "EOF";
-      EOF
-  | any ->
-      let text = get_text buffer (Sedlexing.lexeme buffer) in
-      print_string "Text(";
-      Ustring.print text;
-      print_endline ")";
-      Text text
+  | "<%#" -> LeftParSection
+  | "<%$" -> LeftParLambda
+  | "<%>" -> CloseTag
+  | "<%" -> LeftPar
+  | "%>" -> RightPar
+  | eof -> EOF
+  | any -> Text (get_text buffer (Sedlexing.lexeme buffer))
   | _ -> assert false
 
 let lexer buffer = Sedlexing.with_tokenizer token buffer
