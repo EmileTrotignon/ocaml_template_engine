@@ -2,7 +2,7 @@ open Model
 open Core
 
 let map_concat ~f string_list =
-  List.fold_left ~f:Array.append ~init:[||] (List.map ~f:f string_list)
+  List.fold_left ~f:Array.append ~init:[||] (List.map ~f string_list)
 
 let rec render template model =
   Template.(
@@ -27,9 +27,8 @@ let rec render template model =
 let test_template template model expected_result =
   let t = render template model in
   (* Ustring.print t ;
-  Out_channel.newline stdout; *)
+     Out_channel.newline stdout; *)
   t = expected_result
-
 
 let%test "key" =
   let template =
@@ -62,17 +61,13 @@ let%test "section" =
       ( "test_section",
         Model.List
           [
-            [
-              ("section_key", Model.Value (Ustring.of_string "value 1"));
-            ];
-            [
-              ("section_key", Model.Value (Ustring.of_string "value 2"));
-            ];
-            [
-              ("section_key", Model.Value (Ustring.of_string "value 3"));
-            ];
+            [ ("section_key", Model.Value (Ustring.of_string "value 1")) ];
+            [ ("section_key", Model.Value (Ustring.of_string "value 2")) ];
+            [ ("section_key", Model.Value (Ustring.of_string "value 3")) ];
           ] );
     ]
   in
   test_template template model
-    (Ustring.of_string "first bit a of textsection headervalue 1section footersection headervalue 2section footersection headervalue 3section footer")
+    (Ustring.of_string
+       "first bit a of textsection headervalue 1section footersection \
+        headervalue 2section footersection headervalue 3section footer")
