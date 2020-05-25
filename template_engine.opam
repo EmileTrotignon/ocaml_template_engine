@@ -11,9 +11,8 @@ license: "MIT"
 homepage: "https://emiletrotignon.github.io/ocaml_template_engine/"
 bug-reports: "https://github.com/EmileTrotignon/ocaml_template_engine/issues"
 dev-repo: "git+https://github.com/EmileTrotignon/ocaml_template_engine.git"
-depends: [ "ocaml" "ocamlfind" "dune" "sedlex" "core" "uutf" "menhir" "ppxlib" "containers"]
+depends: [ "ocaml" "ocamlfind" "dune" {build} "sedlex" "core" "uutf" "menhir" "ppxlib" "containers" "bwrap"]
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]
 ]
-install: [make "install"]
