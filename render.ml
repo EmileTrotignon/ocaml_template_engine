@@ -6,10 +6,10 @@ let map_concat ~f string_list =
 
 let rec find_in_models models key =
   match models with
-  | model :: models' -> 
-    (match find model key with
-    | Some elt -> Some elt
-    | None -> find_in_models models' key)
+  | model :: models' -> (
+      match find model key with
+      | Some elt -> Some elt
+      | None -> find_in_models models' key )
   | [] -> None
 
 let render template model =
@@ -21,10 +21,15 @@ let render template model =
         | Key key -> (
             match find_in_models models key with
             | Some (_, Value s) -> s
-            | _ -> failwith (sprintf "Key '%s' need a value associated to it" key))
+            | _ ->
+                failwith (sprintf "Key '%s' need a value associated to it" key)
+            )
         | Section (key, template') -> (
             match find_in_models models key with
-            | Some (_, List values) -> map_concat ~f:(render_from_model_list template') (List.map ~f:(fun v -> v :: models) values)
+            | Some (_, List values) ->
+                map_concat
+                  ~f:(render_from_model_list template')
+                  (List.map ~f:(fun v -> v :: models) values)
             | _ -> failwith (sprintf "Section '%s' need a list" key) )
         | Call (key, template') -> (
             match find_in_models models key with
@@ -33,7 +38,7 @@ let render template model =
       in
       map_concat ~f:render_item template)
   in
-  render_from_model_list template [model]
+  render_from_model_list template [ model ]
 
 let test_template template model expected_result =
   let t = render template model in
